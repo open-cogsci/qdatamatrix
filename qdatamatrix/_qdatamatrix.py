@@ -19,7 +19,7 @@ along with qdatamatatrix.  If not, see <http://www.gnu.org/licenses/>.
 
 from datamatrix.py3compat import *
 from qdatamatrix._qspreadsheet import QSpreadSheet
-from qtpy import QtWidgets
+from qtpy import QtWidgets, QtCore
 
 
 class QDataMatrix(QtWidgets.QWidget):
@@ -28,6 +28,9 @@ class QDataMatrix(QtWidgets.QWidget):
 	desc:
 		QDataMatrix is the main widget for viewing DataMatrix objects.
 	"""
+
+	cellchanged = QtCore.pyqtSignal(int, int)
+	changed = QtCore.pyqtSignal()
 
 	def __init__(self, dm, parent=None):
 

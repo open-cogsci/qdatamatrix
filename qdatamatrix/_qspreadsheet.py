@@ -18,7 +18,7 @@ along with qdatamatatrix.  If not, see <http://www.gnu.org/licenses/>.
 """
 
 from datamatrix.py3compat import *
-from qdatamatrix.decorators import undoable, disconnected, fix_cursor
+from qdatamatrix.decorators import undoable, disconnected, fix_cursor, silent
 from qdatamatrix._qcell import QCell
 from qdatamatrix._qcelldelegate import QCellDelegate
 from qtpy import QtWidgets, QtGui, QtCore
@@ -39,6 +39,7 @@ class QSpreadSheet(QtWidgets.QTableWidget):
 		self._undo_stack = []
 		self._in_undo_action = False
 		self._auto_update = True
+		self._silent = False
 		self._shortcut(u'Ctrl+Z', self._undo)
 		self._shortcut(u'Ctrl+C', self._copy)
 		self._shortcut(u'Ctrl+V', self._paste)
@@ -74,6 +75,7 @@ class QSpreadSheet(QtWidgets.QTableWidget):
 
 		self._qdm.dm = dm
 
+	@silent
 	@fix_cursor
 	@disconnected
 	def refresh(self):
@@ -189,6 +191,7 @@ class QSpreadSheet(QtWidgets.QTableWidget):
 		for colnr in self._selected_columns[::-1]:
 			del self.dm[self.dm.column_names[colnr]]
 		self.refresh()
+		self._qdm.changed.emit()
 
 	@undoable
 	def _remove_rows(self):
@@ -196,6 +199,7 @@ class QSpreadSheet(QtWidgets.QTableWidget):
 		for row in self._selected_rows[::-1]:
 			del self.dm[row]
 		self.refresh()
+		self._qdm.changed.emit()
 
 	def _rename_column(self, colnr):
 
@@ -203,6 +207,7 @@ class QSpreadSheet(QtWidgets.QTableWidget):
 		new_name = self._value(0, colnr)
 		try:
 			self.dm.rename(old_name, new_name)
+			self._qdm.changed.emit()
 		except ValueError as e:
 			self._setcell(0, colnr, old_name)
 
@@ -223,6 +228,9 @@ class QSpreadSheet(QtWidgets.QTableWidget):
 		else:
 			self._change_cell(rownr, colnr)
 		self.item(rownr, colnr).update_style()
+		if not self._silent:
+			self._qdm.cellchanged.emit(rownr, colnr)
+			self._qdm.changed.emit()
 
 	def _setcell(self, rownr, colnr, val=u''):
 

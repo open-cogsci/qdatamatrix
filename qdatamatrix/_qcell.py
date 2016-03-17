@@ -29,7 +29,6 @@ class QCell(QTableWidgetItem):
 		QTableWidgetItem.__init__(self, safe_decode(val))
 		self._style = style
 		self.update_style()
-		# self.unhighlight()
 
 	def clone(self):
 
@@ -41,7 +40,6 @@ class QCell(QTableWidgetItem):
 		fnt.setWeight(QFont.Black)
 		self.setFont(fnt)
 		self.setBackground(QBrush(QColor(u'#d3d7cf')))
-		# self.unhighlight()
 
 	@property
 	def style(self):
@@ -76,11 +74,3 @@ class QCell(QTableWidgetItem):
 			self.setTextAlignment(Qt.AlignRight)
 		else:
 			raise Exception(u'Unknown style: %s' % self.style)
-
-	# def highlight(self):
-	#
-	# 	self.setBackground(QBrush(QColor(u'#d3d7cf')))
-	#
-	# def unhighlight(self):
-	#
-	# 	self.setBackground(QBrush(QColor(u'#eeeeec')))

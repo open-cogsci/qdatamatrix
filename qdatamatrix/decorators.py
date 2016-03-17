@@ -36,6 +36,17 @@ def disconnected(fnc):
 
 	return inner
 
+def silent(fnc):
+
+	def inner(self, *args, **kwdict):
+
+		_silent = self._silent
+		self._silent = True
+		retval = fnc(self, *args, **kwdict)
+		self._silent = _silent
+		return retval
+
+	return inner
 
 def undoable(fnc):
 
