@@ -18,14 +18,14 @@ You should have received a copy of the GNU General Public License
 along with qdatamatrix.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-from datamatrix import __version__
+from qdatamatrix import __version__
 from setuptools import setup, find_packages
 
 setup(
 	name=u'python-qdatamatrix',
 	version=__version__,
 	description= u'A PyQt4/PyQt5 widget for viewing and editing a DataMatrix object',
-	author=u'Sebastiaan Mathôt',
+	author=u'Sebastiaan Mathot',
 	author_email=u's.mathot@cogsci.nl',
 	license=u'GNU GPL Version 3',
 	url=u'https://github.com/smathot/python-qdatamatrix',
