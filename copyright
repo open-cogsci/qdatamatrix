@@ -1,5 +1,5 @@
 Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
-Upstream-Name: python-datamatrix
+Upstream-Name: python-qdatamatrix
 Source: https://github.com/smathot/python-qdatamatrix
 
 Files: *
