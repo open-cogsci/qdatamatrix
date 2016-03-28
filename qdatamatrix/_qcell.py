@@ -22,6 +22,14 @@ from qtpy.QtWidgets import QTableWidgetItem
 from qtpy.QtCore import Qt
 from qtpy.QtGui import QFont, QColor, QBrush
 
+
+HEADER_BACKGROUND = u'#039BE5'
+HEADER_FOREGROUND = u'#FFFFFF'
+CELL_BACKGROUND = u'#ECEFF1'
+CELL_NUMERIC_FOREGROUND = u'#BF360C'
+CELL_TEXT_FOREGROUND = u'#263238'
+
+
 class QCell(QTableWidgetItem):
 
 	def __init__(self, val=u'', style=None):
@@ -39,7 +47,8 @@ class QCell(QTableWidgetItem):
 		fnt = QFont()
 		fnt.setWeight(QFont.Black)
 		self.setFont(fnt)
-		self.setBackground(QBrush(QColor(u'#d3d7cf')))
+		self.setBackground(QBrush(QColor(HEADER_BACKGROUND)))
+		self.setForeground(QBrush(QColor(HEADER_FOREGROUND)))
 
 	@property
 	def style(self):
@@ -62,15 +71,15 @@ class QCell(QTableWidgetItem):
 
 	def update_style(self):
 
-		self.setBackground(QBrush(QColor(u'#eeeeec')))
+		self.setBackground(QBrush(QColor(CELL_BACKGROUND)))
 		if self.style == u'numeric':
+			self.setForeground(QBrush(QColor(CELL_NUMERIC_FOREGROUND)))
 			self.setTextAlignment(Qt.AlignRight)
 		elif self.style == u'text':
+			self.setForeground(QBrush(QColor(CELL_TEXT_FOREGROUND)))
 			self.setTextAlignment(Qt.AlignLeft)
 		elif self.style == u'header':
 			self.setTextAlignment(Qt.AlignCenter)
 			self.set_header_style()
-		elif self.style == u'row':
-			self.setTextAlignment(Qt.AlignRight)
 		else:
 			raise Exception(u'Unknown style: %s' % self.style)
