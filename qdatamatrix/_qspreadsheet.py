@@ -23,6 +23,7 @@ from qdatamatrix._qcell import QCell
 from qdatamatrix._qcelldelegate import QCellDelegate
 from qtpy import QtWidgets, QtGui, QtCore
 
+MAX_COL_WIDTH = 300
 
 class QSpreadSheet(QtWidgets.QTableWidget):
 
@@ -86,6 +87,7 @@ class QSpreadSheet(QtWidgets.QTableWidget):
 			self._setcell(0, colnr, name)
 			for rownr, val in enumerate(col):
 				self._setcell(rownr+1, colnr, val)
+			self._optimize_column_width(colnr)
 
 	# Overridden functions
 
@@ -229,8 +231,15 @@ class QSpreadSheet(QtWidgets.QTableWidget):
 			self._change_cell(rownr, colnr)
 		self.item(rownr, colnr).update_style()
 		if not self._silent:
+			self._optimize_column_width(colnr)
 			self._qdm.cellchanged.emit(rownr, colnr)
 			self._qdm.changed.emit()
+
+	def _optimize_column_width(self, colnr):
+
+		self.resizeColumnToContents(colnr)
+		if self.columnWidth(colnr) > MAX_COL_WIDTH:
+			self.setColumnWidth(colnr, MAX_COL_WIDTH)
 
 	def _setcell(self, rownr, colnr, val=u''):
 
