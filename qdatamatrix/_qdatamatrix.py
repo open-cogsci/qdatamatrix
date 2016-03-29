@@ -53,6 +53,7 @@ class QDataMatrix(QtWidgets.QWidget):
 		self._spreadsheet = QSpreadSheet(self)
 		self._layout = QtWidgets.QHBoxLayout(self)
 		self._layout.addWidget(self._spreadsheet)
+		self._layout.setContentsMargins(0,0,0,0)
 		self.refresh()
 
 	@property
