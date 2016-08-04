@@ -23,6 +23,7 @@ from qdatamatrix._qcell import QCell
 from qdatamatrix._qcelldelegate import QCellDelegate
 from qtpy import QtWidgets, QtGui, QtCore
 
+EMPTY_STR = u'__empty__'
 MAX_COL_WIDTH = 300
 MARGIN = 30
 
@@ -376,7 +377,7 @@ class QSpreadSheet(QtWidgets.QTableWidget):
 		# to deal with non-contiguous selections.
 		matrix = []
 		for col in range(rowspan):
-			matrix.append([u'__empty__']*colspan)
+			matrix.append([EMPTY_STR]*colspan)
 		# Add all selected cells.
 		for item in self.selectedItems():
 			row = self.row(item)-firstrow
@@ -402,4 +403,6 @@ class QSpreadSheet(QtWidgets.QTableWidget):
 		for i, row in enumerate(rows):
 			cells = row.split(u'\t')
 			for j, cell in enumerate(cells):
-				self._setcell(self.currentRow()+i, self.currentColumn()+j, cell)
+				if cell != EMPTY_STR:
+					self._setcell(self.currentRow()+i, self.currentColumn()+j,
+						cell)
