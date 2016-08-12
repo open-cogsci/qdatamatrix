@@ -29,8 +29,8 @@ class QDataMatrix(QtWidgets.QWidget):
 		QDataMatrix is the main widget for viewing DataMatrix objects.
 	"""
 
-	cellchanged = QtCore.pyqtSignal(int, int)
-	changed = QtCore.pyqtSignal()
+	cellchanged = QtCore.Signal(int, int)
+	changed = QtCore.Signal()
 
 	def __init__(self, dm, parent=None):
 
