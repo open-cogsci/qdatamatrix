@@ -20,7 +20,7 @@ along with qdatamatatrix.  If not, see <http://www.gnu.org/licenses/>.
 from datamatrix.py3compat import *
 from qtpy import QtCore
 
-qt_major_version = int(QtCore.QT_VERSION_STR.split(".")[0])
+qt_major_version = int(QtCore.PYQT_VERSION_STR.split(".")[0])
 
 if py3 or qt_major_version > 4:
 	def _(s):

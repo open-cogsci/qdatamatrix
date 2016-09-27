@@ -18,7 +18,7 @@ along with qdatamatatrix.  If not, see <http://www.gnu.org/licenses/>.
 """
 
 from qtpy.QtWidgets import QStyledItemDelegate
-from qtpy.QtCore import Qt, QEvent, pyqtSignal
+from qtpy.QtCore import Qt, QEvent, Signal
 
 
 class QCellDelegate(QStyledItemDelegate):
@@ -29,7 +29,7 @@ class QCellDelegate(QStyledItemDelegate):
 		and next cells in the table.
 	"""
 
-	move = pyqtSignal(int, int)
+	move = Signal(int, int)
 
 	def eventFilter(self, lineEdit, e):
 
