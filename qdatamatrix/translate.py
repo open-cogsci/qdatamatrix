@@ -18,12 +18,14 @@ along with qdatamatatrix.  If not, see <http://www.gnu.org/licenses/>.
 """
 
 from datamatrix.py3compat import *
-from qtpy.QtCore import QCoreApplication
+from qtpy import QtCore
 
-if py3:
+qt_major_version = int(QtCore.QT_VERSION_STR.split(".")[0])
+
+if py3 or qt_major_version > 4:
 	def _(s):
-		return QCoreApplication.translate(u'qdatamatrix', s)
+		return QtCore.QCoreApplication.translate(u'qdatamatrix', s)
 else:
 	def _(s):
-		return QCoreApplication.translate(u'qdatamatrix', s,
-			encoding=QCoreApplication.UnicodeUTF8)
+		return QtCore.QCoreApplication.translate(u'qdatamatrix', s,
+			encoding=QtCore.QCoreApplication.UnicodeUTF8)
