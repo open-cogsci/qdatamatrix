@@ -18,6 +18,7 @@ along with qdatamatatrix.  If not, see <http://www.gnu.org/licenses/>.
 """
 
 from datamatrix.py3compat import *
+import os
 from qdatamatrix.decorators import undoable, disconnected, fix_cursor, silent
 from qdatamatrix._qcell import QCell
 from qdatamatrix._qcelldelegate import QCellDelegate
@@ -399,7 +400,7 @@ class QSpreadSheet(QtWidgets.QTableWidget):
 		"""
 
 		txt = self._clipboard.mimeData().text()
-		rows = txt.split(u'\n')
+		rows = txt.replace(os.linesep, u'\n').split(u'\n')
 		for i, row in enumerate(rows):
 			cells = row.split(u'\t')
 			for j, cell in enumerate(cells):
