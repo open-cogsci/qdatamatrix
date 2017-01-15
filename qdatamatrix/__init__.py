@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with qdatamatatrix.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-__version__ = '0.1.10'
+__version__ = '0.1.12'
 
 from datamatrix.py3compat import *
 from qdatamatrix._qdatamatrix import QDataMatrix
