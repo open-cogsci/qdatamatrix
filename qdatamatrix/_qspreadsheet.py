@@ -391,6 +391,7 @@ class QSpreadSheet(QtWidgets.QTableWidget):
 		if copy:
 			self._clipboard.setText(txt)
 
+	@silent
 	@undoable
 	def _paste(self):
 
@@ -401,9 +402,15 @@ class QSpreadSheet(QtWidgets.QTableWidget):
 
 		txt = self._clipboard.mimeData().text()
 		rows = txt.replace(os.linesep, u'\n').split(u'\n')
+		columns = []
 		for i, row in enumerate(rows):
 			cells = row.split(u'\t')
 			for j, cell in enumerate(cells):
 				if cell != EMPTY_STR:
-					self._setcell(self.currentRow()+i, self.currentColumn()+j,
-						cell)
+					col = self.currentColumn()
+					if col not in columns:
+						columns.append(col)
+					self._setcell(self.currentRow()+i, col+j, cell)
+		for col in columns:
+			self._optimize_column_width(col)
+		self._qdm.changed.emit()
