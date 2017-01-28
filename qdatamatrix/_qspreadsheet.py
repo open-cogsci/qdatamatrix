@@ -23,6 +23,7 @@ from qdatamatrix.decorators import undoable, disconnected, fix_cursor, silent
 from qdatamatrix._qcell import QCell
 from qdatamatrix._qcelldelegate import QCellDelegate
 from qtpy import QtWidgets, QtGui, QtCore
+import re
 
 EMPTY_STR = u'__empty__'
 MAX_COL_WIDTH = 300
@@ -59,6 +60,9 @@ class QSpreadSheet(QtWidgets.QTableWidget):
 		self.setItemPrototype(QCell())
 		self.horizontalHeader().hide()
 		self.cellChanged.connect(self._on_cell_changed)
+
+		# Regular expression to catch all newline varieties of various OS's
+		self.newlines_re = re.compile(r'(\r\n|\r|\n)')
 
 	def _print(self):
 
@@ -401,7 +405,7 @@ class QSpreadSheet(QtWidgets.QTableWidget):
 		"""
 
 		txt = self._clipboard.mimeData().text()
-		rows = txt.replace(os.linesep, u'\n').split(u'\n')
+		rows = self.newlines_re.sub('\n', txt).split(u'\n')
 		columns = []
 		for i, row in enumerate(rows):
 			cells = row.split(u'\t')
