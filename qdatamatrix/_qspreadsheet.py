@@ -282,12 +282,13 @@ class QSpreadSheet(QtWidgets.QTableWidget):
 		"""
 
 		self._in_undo_action = True
-		if len(self._undo_stack) == 0:
+		if not self._undo_stack:
 			self._in_undo_action = False
 			return
 		self._cursor_pos, self.dm = self._undo_stack.pop()
 		self._in_undo_action = False
 		self.refresh()
+		self._qdm.changed.emit()
 
 	def _start_undo_action(self):
 
