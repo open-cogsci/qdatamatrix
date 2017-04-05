@@ -72,6 +72,16 @@ class QSpreadSheet(QtWidgets.QTableWidget):
 
 		QtWidgets.QShortcut(QtGui.QKeySequence(keyseq), self, target,
 			context=QtCore.Qt.WidgetWithChildrenShortcut)
+			
+	@property
+	def _column_names(self):
+		
+		"""
+		desc:
+			Gives a non-sorted representation of the columns.
+		"""
+		
+		return [column_name for column_name, column in self.dm.columns]
 
 	@property
 	def dm(self):
@@ -177,7 +187,7 @@ class QSpreadSheet(QtWidgets.QTableWidget):
 			self.dm[self._unique_name] = u''
 			item = self.item(0, i)
 			if item is None:
-				self._setcell(0, i, self.dm.column_names[i])
+				self._setcell(0, i, self._column_names[i])
 			for rownr in range(1, len(self.dm)+1):
 				item = self.item(rownr, i)
 				if item is None:
@@ -198,7 +208,7 @@ class QSpreadSheet(QtWidgets.QTableWidget):
 	def _remove_columns(self):
 
 		for colnr in self._selected_columns[::-1]:
-			del self.dm[self.dm.column_names[colnr]]
+			del self.dm[self._column_names[colnr]]
 		self.refresh()
 		self._qdm.changed.emit()
 
@@ -212,7 +222,7 @@ class QSpreadSheet(QtWidgets.QTableWidget):
 
 	def _rename_column(self, colnr):
 
-		old_name = self.dm.column_names[colnr]
+		old_name = self._column_names[colnr]
 		new_name = self._value(0, colnr)
 		try:
 			self.dm.rename(old_name, new_name)
@@ -266,7 +276,7 @@ class QSpreadSheet(QtWidgets.QTableWidget):
 		i = 1
 		while True:
 			name = u'new_column_%d' % i
-			if name not in self.dm.column_names:
+			if name not in self._column_names:
 				return name
 			i += 1
 
