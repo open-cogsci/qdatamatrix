@@ -50,6 +50,7 @@ class QDataMatrix(QtWidgets.QWidget):
 
 		QtWidgets.QWidget.__init__(self, parent=parent)
 		self._dm = dm
+		self._dm.sorted = False
 		self._spreadsheet = QSpreadSheet(self)
 		self._layout = QtWidgets.QHBoxLayout(self)
 		self._layout.addWidget(self._spreadsheet)
