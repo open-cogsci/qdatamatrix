@@ -18,7 +18,6 @@ along with qdatamatatrix.  If not, see <http://www.gnu.org/licenses/>.
 """
 
 from datamatrix.py3compat import *
-import os
 from qdatamatrix.decorators import undoable, disconnected, fix_cursor, silent
 from qdatamatrix._qcell import QCell
 from qdatamatrix._qcelldelegate import QCellDelegate
@@ -72,15 +71,15 @@ class QSpreadSheet(QtWidgets.QTableWidget):
 
 		QtWidgets.QShortcut(QtGui.QKeySequence(keyseq), self, target,
 			context=QtCore.Qt.WidgetWithChildrenShortcut)
-			
+
 	@property
 	def _column_names(self):
-		
+
 		"""
 		desc:
 			Gives a non-sorted representation of the columns.
 		"""
-		
+
 		return [column_name for column_name, column in self.dm.columns]
 
 	@property
@@ -224,6 +223,9 @@ class QSpreadSheet(QtWidgets.QTableWidget):
 
 		old_name = self._column_names[colnr]
 		new_name = self._value(0, colnr)
+		if new_name in self.dm.column_names:
+			new_name = self._unique_name
+			self._setcell(0, colnr, new_name)
 		try:
 			self.dm.rename(old_name, new_name)
 			self._qdm.changed.emit()
