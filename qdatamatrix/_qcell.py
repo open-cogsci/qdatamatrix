@@ -82,4 +82,4 @@ class QCell(QTableWidgetItem):
 			self.setTextAlignment(Qt.AlignCenter)
 			self.set_header_style()
 		else:
-			raise Exception(u'Unknown style: %s' % self.style)
+			raise ValueError(u'Unknown style: %s' % self.style)
