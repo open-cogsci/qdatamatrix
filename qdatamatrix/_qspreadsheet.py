@@ -223,6 +223,8 @@ class QSpreadSheet(QtWidgets.QTableWidget):
 
 		old_name = self._column_names[colnr]
 		new_name = self._value(0, colnr)
+		if old_name == new_name:
+			return
 		if new_name in self.dm.column_names:
 			new_name = self._unique_name
 			self._setcell(0, colnr, new_name)
