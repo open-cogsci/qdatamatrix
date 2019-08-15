@@ -18,11 +18,15 @@ You should have received a copy of the GNU General Public License
 along with qdatamatrix.  If not, see <http://www.gnu.org/licenses/>.
 """
 
+import sys
 from qdatamatrix import __version__
 from setuptools import setup, find_packages
 
+# Increment to force a change in the source tarball.
+DUMMY=1
+
 setup(
-	name=u'python-qdatamatrix',
+	name=u'qdatamatrix' if u'bdist_deb' in sys.argv else u'python-qdatamatrix',
 	version=__version__,
 	description= u'A PyQt4/PyQt5 widget for viewing and editing a DataMatrix object',
 	author=u'Sebastiaan Mathot',
