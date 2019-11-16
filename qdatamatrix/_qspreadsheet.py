@@ -36,7 +36,7 @@ class QSpreadSheet(QtWidgets.QTableWidget):
 		created automatically by QDataMatrix.
 	"""
 
-	def __init__(self, qdm=None):
+	def __init__(self, qdm=None, read_only=False):
 
 		QtWidgets.QTableWidget.__init__(self, parent=qdm)
 		self._qdm = qdm
@@ -44,6 +44,7 @@ class QSpreadSheet(QtWidgets.QTableWidget):
 		self._in_undo_action = False
 		self._auto_update = True
 		self._silent = False
+		self.read_only = read_only
 		self._shortcut(u'Ctrl+Z', self._undo)
 		self._shortcut(u'Ctrl+C', self._copy)
 		self._shortcut(u'Ctrl+V', self._paste)
@@ -104,6 +105,8 @@ class QSpreadSheet(QtWidgets.QTableWidget):
 			for rownr, val in enumerate(col):
 				self._setcell(rownr+1, colnr, val)
 			self._optimize_column_width(colnr)
+		self.setColumnCount(len(self.dm.columns))
+		self.setRowCount(len(self.dm) + 1)
 
 	# Overridden functions
 
@@ -273,6 +276,9 @@ class QSpreadSheet(QtWidgets.QTableWidget):
 		else:
 			item.setText(safe_decode(val))
 		item.update_style()
+		if self.read_only:
+			item.setFlags(item.flags() ^ QtCore.Qt.ItemIsEditable)
+
 
 	@property
 	def _unique_name(self):

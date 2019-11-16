@@ -32,7 +32,7 @@ class QDataMatrix(QtWidgets.QWidget):
 	cellchanged = QtCore.Signal(int, int)
 	changed = QtCore.Signal()
 
-	def __init__(self, dm, parent=None):
+	def __init__(self, dm, parent=None, read_only=False):
 
 		"""
 		desc:
@@ -46,12 +46,15 @@ class QDataMatrix(QtWidgets.QWidget):
 			parent:
 				desc:	A parent QWidget, or None for no parent.
 				type:	[QWidget, None]
+			read_only:
+				desc:	Makes the matrix read-only.
+				type:	bool
 		"""
 
 		QtWidgets.QWidget.__init__(self, parent=parent)
 		self._dm = dm
 		self._dm.sorted = False
-		self._spreadsheet = QSpreadSheet(self)
+		self._spreadsheet = QSpreadSheet(self, read_only=read_only)
 		self._layout = QtWidgets.QHBoxLayout(self)
 		self._layout.addWidget(self._spreadsheet)
 		self._layout.setContentsMargins(0,0,0,0)

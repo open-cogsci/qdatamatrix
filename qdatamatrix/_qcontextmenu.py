@@ -108,8 +108,11 @@ class QContextMenu(QtWidgets.QMenu):
 
 		QtWidgets.QMenu.__init__(self, parent=spreadsheet)
 		self._spreadsheet = spreadsheet
-		self.addAction(QCutAction(self))
+		if not self._spreadsheet.read_only:
+			self.addAction(QCutAction(self))
 		self.addAction(QCopyAction(self))
+		if self._spreadsheet.read_only:
+			return
 		self.addAction(QPasteAction(self))
 		self.addSeparator()
 		if spreadsheet._selected_rows:
