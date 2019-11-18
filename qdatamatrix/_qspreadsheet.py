@@ -105,8 +105,9 @@ class QSpreadSheet(QtWidgets.QTableWidget):
 			for rownr, val in enumerate(col):
 				self._setcell(rownr+1, colnr, val)
 			self._optimize_column_width(colnr)
-		self.setColumnCount(len(self.dm.columns))
-		self.setRowCount(len(self.dm) + 1)
+		if self.read_only:
+			self.setColumnCount(len(self.dm.columns))
+			self.setRowCount(len(self.dm) + 1)
 
 	# Overridden functions
 
