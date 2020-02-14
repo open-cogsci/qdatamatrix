@@ -60,7 +60,8 @@ class QSpreadSheet(QtWidgets.QTableWidget):
 		self.setItemPrototype(QCell())
 		self.horizontalHeader().hide()
 		self.cellChanged.connect(self._on_cell_changed)
-
+		self.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOn)
+		self.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOn)
 		# Regular expression to catch all newline varieties of various OS's
 		self.newlines_re = re.compile(r'(\r\n|\r|\n)')
 
@@ -100,14 +101,52 @@ class QSpreadSheet(QtWidgets.QTableWidget):
 
 		self.clear()
 		self._adjust_size()
+		self._last_visible_row = 0
 		for colnr, (name, col) in enumerate(self.dm.columns):
 			self._setcell(0, colnr, name)
-			for rownr, val in enumerate(col):
-				self._setcell(rownr+1, colnr, val)
-			self._optimize_column_width(colnr)
+		self._fill_visible_cells()
 		if self.read_only:
 			self.setColumnCount(len(self.dm.columns))
 			self.setRowCount(len(self.dm) + 1)
+			
+	@silent
+	@fix_cursor
+	@disconnected
+	def verticalScrollbarValueChanged(self, pos):
+		
+		self._fill_visible_cells()
+	
+	@silent
+	@fix_cursor
+	@disconnected
+	def resizeEvent(self, event):
+		
+		self._fill_visible_cells()
+
+	@silent
+	@fix_cursor
+	@disconnected
+	def showEvent(self, event):
+		
+		self._fill_visible_cells()
+			
+	def _fill_visible_cells(self):
+		
+		if self._last_visible_row == len(self.dm):
+			return
+		if self.read_only:
+			# For performance reasons we don't initialize read-only tables
+			# completely. This makes it possible to view very larges data
+			# structures.
+			last_row = min(len(self.dm), self.rowAt(self.height()))
+		else:
+			last_row = len(self.dm)
+		for colnr, (name, col) in enumerate(self.dm.columns):
+			for rownr in range(self._last_visible_row, last_row):
+				val = col[rownr]
+				self._setcell(rownr + 1, colnr, val)
+			self._optimize_column_width(colnr)
+		self._last_visible_row = last_row
 
 	# Overridden functions
 
