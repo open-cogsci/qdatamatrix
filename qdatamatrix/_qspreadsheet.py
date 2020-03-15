@@ -130,17 +130,16 @@ class QSpreadSheet(QtWidgets.QTableWidget):
 		
 		self._fill_visible_cells()
 			
-	def _fill_visible_cells(self):
+	def _fill_visible_cells(self, fill_all=False):
 		
 		if self._last_visible_row == len(self.dm):
 			return
-		if self.read_only:
-			# For performance reasons we don't initialize read-only tables
-			# completely. This makes it possible to view very larges data
-			# structures.
-			last_row = min(len(self.dm), self.rowAt(self.height()))
-		else:
-			last_row = len(self.dm)
+		# For performance reasons we don't initialize read-tables completely.
+		# This makes it possible to view very larges data structures.
+		last_row = len(self.dm) if fill_all else min(
+			len(self.dm),
+			self.rowAt(self.height())
+		)
 		for colnr, (name, col) in enumerate(self.dm.columns):
 			for rownr in range(self._last_visible_row, last_row):
 				val = col[rownr]
@@ -163,6 +162,24 @@ class QSpreadSheet(QtWidgets.QTableWidget):
 
 		from qdatamatrix._qcontextmenu import QContextMenu
 		QContextMenu(self).exec_(e.globalPos())
+
+	@silent
+	@fix_cursor
+	@disconnected
+	def selectAll(self):
+		
+		"""
+		desc:
+			Selects all existing cells.
+		"""
+		
+		self._fill_visible_cells(fill_all=True)
+		self.setRangeSelected(
+			QtWidgets.QTableWidgetSelectionRange(
+				0, 0, len(self.dm), len(self.dm.columns) - 1
+			),
+			True
+		)
 
 	# Private functions
 
@@ -319,7 +336,6 @@ class QSpreadSheet(QtWidgets.QTableWidget):
 		if self.read_only:
 			item.setFlags(item.flags() ^ QtCore.Qt.ItemIsEditable)
 
-
 	@property
 	def _unique_name(self):
 
@@ -412,6 +428,7 @@ class QSpreadSheet(QtWidgets.QTableWidget):
 
 		self._copy(clear=True, copy=False)
 
+	@silent
 	def _copy(self, clear=False, copy=True):
 
 		"""
@@ -429,13 +446,13 @@ class QSpreadSheet(QtWidgets.QTableWidget):
 		"""
 
 		# Get the start and end of the selection
-		l = self.selectedRanges()
-		if len(l) == 0:
+		selection = self.selectedRanges()
+		if not selection:
 			return
-		firstrow = min([r.topRow() for r in l])
-		firstcolnr = min([r.leftColumn() for r in l])
-		lastrow = max([r.bottomRow() for r in l])
-		lastcolnr = max([r.rightColumn() for r in l])
+		firstrow = min([r.topRow() for r in selection])
+		firstcolnr = min([r.leftColumn() for r in selection])
+		lastrow = max([r.bottomRow() for r in selection])
+		lastcolnr = max([r.rightColumn() for r in selection])
 		colspan = lastcolnr - firstcolnr + 1
 		rowspan = lastrow - firstrow + 1
 		# Create an empty list of lists, where the value __empty__ indicates
@@ -445,16 +462,24 @@ class QSpreadSheet(QtWidgets.QTableWidget):
 		for col in range(rowspan):
 			matrix.append([EMPTY_STR]*colspan)
 		# Add all selected cells.
+		columns_to_optimize = set()
 		for item in self.selectedItems():
-			row = self.row(item)-firstrow
-			colnr = self.column(item)-firstcolnr
-			matrix[row][colnr] = item.text()
+			rownr = self.row(item) - firstrow
+			if rownr > self._last_visible_row:
+				for colnr, (name, col) in enumerate(self.dm.columns):
+					self._setcell(rownr + 1, colnr, col[rownr])
+					columns_to_optimize.add(colnr)
+			colnr = self.column(item) - firstcolnr
+			matrix[rownr][colnr] = item.text()
 			if clear:
 				self._setcell(self.row(item), self.column(item))
+		for colnr in columns_to_optimize:
+			self._optimize_column_width(colnr)
+		if not copy:
+			return
 		# Convert the selection to text and put it on the clipboard
 		txt = u'\n'.join([u'\t'.join(_col) for _col in matrix])
-		if copy:
-			self._clipboard.setText(txt)
+		self._clipboard.setText(txt)
 
 	@silent
 	@undoable
