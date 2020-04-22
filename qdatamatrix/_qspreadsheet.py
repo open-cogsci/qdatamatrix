@@ -139,7 +139,7 @@ class QSpreadSheet(QtWidgets.QTableWidget):
 		last_row = len(self.dm) if fill_all else min(
 			len(self.dm),
 			self.rowAt(self.height())
-		)
+		)		
 		for colnr, (name, col) in enumerate(self.dm.columns):
 			for rownr in range(self._last_visible_row, last_row):
 				val = col[rownr]
@@ -234,7 +234,10 @@ class QSpreadSheet(QtWidgets.QTableWidget):
 	@_cursor_pos.setter
 	def _cursor_pos(self, pos):
 
+		selection_ranges = self.selectedRanges()
 		self.setCurrentCell(pos[0], pos[1])
+		for selection_range in selection_ranges:
+			self.setRangeSelected(selection_range, True)
 
 	def _column_by_index(self, colnr):
 
