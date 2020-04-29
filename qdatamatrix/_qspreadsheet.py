@@ -139,7 +139,12 @@ class QSpreadSheet(QtWidgets.QTableWidget):
 		last_row = len(self.dm) if fill_all else min(
 			len(self.dm),
 			self.rowAt(self.height())
-		)		
+		)
+		# rowAt() will return -1 when there is no row at that location. This
+		# appears to happen when the last visible row is outside of the dm, and
+		# then we just fall back to showing all rows.
+		if last_row < 0:
+			last_row = len(self.dm)
 		for colnr, (name, col) in enumerate(self.dm.columns):
 			for rownr in range(self._last_visible_row, last_row):
 				val = col[rownr]
