@@ -18,3 +18,4 @@ along with qdatamatatrix.  If not, see <http://www.gnu.org/licenses/>.
 """
 
 from qdatamatrix._version import __version__
+from qdatamatrix._qdatamatrix import QDataMatrix
