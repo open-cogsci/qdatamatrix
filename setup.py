@@ -19,7 +19,8 @@ along with qdatamatrix.  If not, see <http://www.gnu.org/licenses/>.
 """
 
 import sys
-from qdatamatrix import __version__
+import os
+from qdatamatrix._version import __version__
 from setuptools import setup, find_packages
 
 # Increment to force a change in the source tarball.
