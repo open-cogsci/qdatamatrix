@@ -475,7 +475,10 @@ class QSpreadSheet(QtWidgets.QTableWidget):
 			rownr = self.row(item) - firstrow
 			if rownr > self._last_visible_row:
 				for colnr, (name, col) in enumerate(self.dm.columns):
-					self._setcell(rownr + 1, colnr, col[rownr])
+					try:
+						self._setcell(rownr + 1, colnr, col[rownr])
+					except IndexError:
+						pass  # Appears to happen in rare conditions
 					columns_to_optimize.add(colnr)
 			colnr = self.column(item) - firstcolnr
 			matrix[rownr][colnr] = item.text()
