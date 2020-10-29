@@ -3,7 +3,7 @@
 *A PyQt4/PyQt5 widget for viewing and editing a `DataMatrix` object.*
 
 Sebastiaan Mathôt  <br />
-Copyright 2016  <br />
+Copyright 2016-2020  <br />
 http://www.cogsci.nl/smathot
 
 ## About
