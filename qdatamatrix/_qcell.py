@@ -71,7 +71,12 @@ class QCell(QTableWidgetItem):
 
 	def update_style(self):
 
-		self.setBackground(QBrush(QColor(CELL_BACKGROUND)))
+		try:
+			self.setBackground(QBrush(QColor(CELL_BACKGROUND)))
+		except RuntimeError:
+			# Catch what seems to be a race conditon:
+			# https://github.com/open-cogsci/python-qdatamatrix/issues/7
+			return
 		if self.style == u'numeric':
 			self.setForeground(QBrush(QColor(CELL_NUMERIC_FOREGROUND)))
 			self.setTextAlignment(Qt.AlignRight)
