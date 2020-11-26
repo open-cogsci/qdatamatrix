@@ -105,9 +105,6 @@ class QSpreadSheet(QtWidgets.QTableWidget):
 		for colnr, (name, col) in enumerate(self.dm.columns):
 			self._setcell(0, colnr, name)
 		self._fill_visible_cells()
-		if self.read_only:
-			self.setColumnCount(len(self.dm.columns))
-			self.setRowCount(len(self.dm) + 1)
 			
 	@silent
 	@fix_cursor
@@ -131,7 +128,7 @@ class QSpreadSheet(QtWidgets.QTableWidget):
 		self._fill_visible_cells()
 			
 	def _fill_visible_cells(self, fill_all=False):
-		
+
 		if self._last_visible_row == len(self.dm):
 			return
 		# For performance reasons we don't initialize read-tables completely.
@@ -189,9 +186,13 @@ class QSpreadSheet(QtWidgets.QTableWidget):
 	# Private functions
 
 	def _adjust_size(self):
-
-		self.setColumnCount((1+(len(self.dm.columns)+50) // 100) * 100)
-		self.setRowCount(1 + (1+(len(self.dm)+50) // 100) * 100)
+		
+		if self.read_only:
+			self.setColumnCount(len(self.dm.columns))
+			self.setRowCount(len(self.dm) + 1)
+		else:
+			self.setColumnCount((1+(len(self.dm.columns)+50) // 100) * 100)
+			self.setRowCount(1 + (1+(len(self.dm)+50) // 100) * 100)
 		self.setVerticalHeaderLabels([u'']+ \
 			[str(i) for i in range(1, len(self.dm)+1)]+ \
 			[u'']*(self.rowCount()-len(self.dm)-1))
