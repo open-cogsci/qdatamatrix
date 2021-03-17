@@ -506,6 +506,8 @@ class QSpreadSheet(QtWidgets.QTableWidget):
 		rows = self.newlines_re.sub('\n', txt).split(u'\n')
 		columns = []
 		for i, row in enumerate(rows):
+			if not row:  # avoid pasting an empty row at the end
+				continue
 			cells = row.split(u'\t')
 			for j, cell in enumerate(cells):
 				if cell != EMPTY_STR:
