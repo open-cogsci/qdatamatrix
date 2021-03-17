@@ -299,7 +299,8 @@ class QSpreadSheet(QtWidgets.QTableWidget):
 			self._setcell(0, colnr, new_name)
 		try:
 			self.dm.rename(old_name, new_name)
-			self._qdm.changed.emit()
+			if not self._silent:
+				self._qdm.changed.emit()
 		except:
 			self._setcell(0, colnr, old_name)
 
@@ -492,7 +493,7 @@ class QSpreadSheet(QtWidgets.QTableWidget):
 		# Convert the selection to text and put it on the clipboard
 		txt = u'\n'.join([u'\t'.join(_col) for _col in matrix])
 		self._clipboard.setText(txt)
-
+		
 	@silent
 	@undoable
 	def _paste(self):
@@ -504,17 +505,39 @@ class QSpreadSheet(QtWidgets.QTableWidget):
 
 		txt = self._clipboard.mimeData().text()
 		rows = self.newlines_re.sub('\n', txt).split(u'\n')
-		columns = []
+		changed_columns = set()
+		first_col = self.currentColumn()
+		first_row = self.currentRow()
 		for i, row in enumerate(rows):
 			if not row:  # avoid pasting an empty row at the end
 				continue
 			cells = row.split(u'\t')
 			for j, cell in enumerate(cells):
-				if cell != EMPTY_STR:
-					col = self.currentColumn()
-					if col not in columns:
-						columns.append(col)
-					self._setcell(self.currentRow()+i, col+j, cell)
-		for col in columns:
+				if cell == EMPTY_STR:
+					continue
+				col = first_col + j
+				row = first_row + i
+				if row == 0:
+					# If the column name overlaps with a previous column name,
+					# then we add a suffix to distinguish it.
+					colname = cell
+					colname_suffix = 1
+					while colname in self.dm.column_names[:col]:
+						colname = u'{}_{}'.format(cell, colname_suffix)
+						colname_suffix += 1
+					cell = colname
+					# then we add a suffix to that other column name
+					# If the column name overlaps with a following column name
+					if cell in self.dm.column_names[col + 1:]:
+						conflict_index = self.dm.column_names.index(colname)
+						colname = cell
+						colname_suffix = 1
+						while colname in self.dm.column_names[col + 1:]:
+							colname = u'{}_{}'.format(cell, colname_suffix)
+							colname_suffix += 1
+						self._setcell(row, conflict_index, colname)
+				self._setcell(row, col, cell)
+				changed_columns.add(col)
+		for col in changed_columns:
 			self._optimize_column_width(col)
 		self._qdm.changed.emit()
