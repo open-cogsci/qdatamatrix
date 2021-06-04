@@ -415,7 +415,9 @@ class QSpreadSheet(QtWidgets.QTableWidget):
 		"""
 
 		if not self._in_undo_action:
-			self._undo_stack.append( (self._cursor_pos, self.dm[:]) )
+			dm = self.dm[:]
+			dm.sorted = False
+			self._undo_stack.append((self._cursor_pos, dm))
 
 	@undoable
 	def _cut(self):
