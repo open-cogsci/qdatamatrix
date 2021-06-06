@@ -1,0 +1,4 @@
+include copyright
+include COPYING
+include readme.md
+include example.py
