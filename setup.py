@@ -27,15 +27,15 @@ from setuptools import setup, find_packages
 DUMMY=1
 
 setup(
-	name=u'qdatamatrix' if u'bdist_deb' in sys.argv else u'python-qdatamatrix',
+	name='qdatamatrix',
 	version=__version__,
-	description= u'A PyQt4/PyQt5 widget for viewing and editing a DataMatrix object',
-	author=u'Sebastiaan Mathot',
-	author_email=u's.mathot@cogsci.nl',
-	license=u'GNU GPL Version 3',
-	url=u'https://github.com/smathot/python-qdatamatrix',
+	description= 'A PyQt4/PyQt5 widget for viewing and editing a DataMatrix object',
+	author='Sebastiaan Mathot',
+	author_email='s.mathot@cogsci.nl',
+	license='GNU GPL Version 3',
+	url='https://github.com/open-cogsci/qdatamatrix',
 	packages=find_packages('.'),
-	install_requires=['python-datamatrix'],
+	install_requires=['datamatrix'],
 	classifiers=[
 		'Development Status :: 4 - Beta',
 		'Intended Audience :: Science/Research',
