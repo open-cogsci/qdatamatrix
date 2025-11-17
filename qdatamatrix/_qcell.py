@@ -20,14 +20,27 @@ along with qdatamatatrix.  If not, see <http://www.gnu.org/licenses/>.
 from datamatrix.py3compat import *
 from qtpy.QtWidgets import QTableWidgetItem
 from qtpy.QtCore import Qt
-from qtpy.QtGui import QFont, QColor, QBrush
+from qtpy.QtGui import QFont, QColor, QBrush, QGuiApplication
+mode = 'light'
+try:
+    if QGuiApplication.styleHints().colorScheme() == Qt.ColorScheme.Dark:
+        mode = 'dark'
+except Exception:
+    pass
 
-
-HEADER_BACKGROUND = u'#039BE5'
-HEADER_FOREGROUND = u'#FFFFFF'
-CELL_BACKGROUND = u'#ECEFF1'
-CELL_NUMERIC_FOREGROUND = u'#BF360C'
-CELL_TEXT_FOREGROUND = u'#263238'
+if mode == 'light':
+    HEADER_BACKGROUND = u'#039BE5'
+    HEADER_FOREGROUND = u'#FFFFFF'
+    CELL_BACKGROUND = u'#ECEFF1'
+    CELL_NUMERIC_FOREGROUND = u'#BF360C'
+    CELL_TEXT_FOREGROUND = u'#263238'
+else:
+    # Dark mode palette - modern and easy on the eyes
+    HEADER_BACKGROUND = u'#1E88E5'  # Softer blue that works well in dark mode
+    HEADER_FOREGROUND = u'#FFFFFF'
+    CELL_BACKGROUND = u'#2D2D30'    # Comfortable dark gray background
+    CELL_NUMERIC_FOREGROUND = u'#FF6B6B'  # Soft red/coral for numbers
+    CELL_TEXT_FOREGROUND = u'#E0E0E0'     # Light gray for text, easy to read
 
 
 class QCell(QTableWidgetItem):
